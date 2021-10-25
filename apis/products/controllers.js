@@ -17,7 +17,19 @@ exports.productDelete = (req, res) => {
   if (foundProduct) {
     products = products.filter((product) => product.id !== +foundProduct.id);
 
-    res.status(204).end();
+    return res.status(204).end();
+  } else {
+    return res.status(404).json({ message: "Product not found" });
+  }
+};
+
+exports.productListDetails = (req, res) => {
+  const product = products.find(
+    (product) => product.id === +req.params.productId
+  );
+
+  if (product) {
+    res.json(product);
   } else {
     res.status(404).json({ message: "Product not found" });
   }
