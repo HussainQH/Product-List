@@ -1,5 +1,5 @@
 const express = require("express");
-const products = require("./data");
+let products = require("./data");
 
 const app = express();
 
@@ -13,7 +13,11 @@ app.get("/api/products/:productId", (req, res) => {
   const product = products.find(
     (product) => product.id === +req.params.productId
   );
-  res.json(product);
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404).json({ message: "Product not found" });
+  }
 });
 
 app.post("/api/products", (req, res) => {
@@ -26,11 +30,9 @@ app.delete("/api/products/:productId", (req, res) => {
   const foundProduct = products.find((product) => product.id === +productId);
 
   if (foundProduct) {
-    const tempProducts = products.filter(
-      (product) => product.id !== foundProduct.id
-    );
+    products = products.filter((product) => product.id !== +foundProduct.id);
 
-    res.json(tempProducts);
+    res.status(204).end();
   } else {
     res.status(404).json({ message: "Product not found" });
   }
