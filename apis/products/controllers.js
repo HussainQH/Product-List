@@ -1,36 +1,35 @@
-let products = require("../../data");
+const mongoose = require("mongoose");
 
-exports.productListFetch = (req, res) => {
-  return res.json(products);
+const Product = require("../../models/Product");
+
+exports.productListFetch = async (req, res) => {
+  try {
+    const products = await Product.find();
+    return res.json(products);
+  } catch (error) {
+    res.status(500);
+  }
 };
 
-exports.productCreate = (req, res) => {
-  products.push(req.body);
-
-  return res.status(201).json(req.body);
+exports.productCreate = async (req, res) => {
+  try {
+    const newProduct = await Product.create(req.body);
+    return res.status(201).json(newProduct);
+  } catch (error) {
+    return res.status(500);
+  }
 };
 
-exports.productDelete = (req, res) => {
+exports.productDelete = async (req, res) => {
   const { productId } = req.params;
-  const foundProduct = products.find((product) => product.id === +productId);
+  try {
+    const foundProduct = await Product.findById(productId);
 
-  if (foundProduct) {
-    products = products.filter((product) => product.id !== +foundProduct.id);
-
+    await Product.remove(foundProduct);
     return res.status(204).end();
-  } else {
-    return res.status(404).json({ message: "Product not found" });
+  } catch (error) {
+    res.status(500);
   }
 };
 
-exports.productListDetails = (req, res) => {
-  const product = products.find(
-    (product) => product.id === +req.params.productId
-  );
-
-  if (product) {
-    res.json(product);
-  } else {
-    res.status(404).json({ message: "Product not found" });
-  }
-};
+exports.productListDetails = (req, res) => {};
