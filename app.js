@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   console.log(
-    `${req.method} ${req.protocol}://${req.hostname}:${PORT}${req.originalUrl}`
+    `${req.method} ${req.protocol}://${req.get("host")}${req.originalUrl}`
   );
 
   next();
@@ -21,11 +21,13 @@ const PORT = 8000;
 connectDb();
 
 app.use((req, res, next) => {
-  if (productRouters === "/api/products") {
-    next();
-  } else {
-    res.status(404).json({ message: "Path Not Found" });
-  }
+  res.status(404).json({ message: "Path Not Found" });
+});
+
+app.use((err, req, res, next) => {
+  res
+    .status(err.status || 500)
+    .json({ message: err.message || "Internal Server Error" });
 });
 
 app.listen(PORT, () => {

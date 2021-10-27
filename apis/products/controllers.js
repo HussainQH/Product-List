@@ -2,12 +2,29 @@ const mongoose = require("mongoose");
 
 const Product = require("../../models/Product");
 
-exports.productListFetch = async (req, res) => {
+exports.productListFetch = async (req, res, next) => {
   try {
     const products = await Product.find();
     return res.json(products);
   } catch (error) {
-    res.status(500);
+    next(error);
+  }
+};
+
+exports.productListDetail = async (req, res, next) => {
+  const { productId } = req.params;
+  try {
+    const product = await Product.findById({ _id: productId });
+    if (product) {
+      return res.json(product);
+    } else {
+      next({
+        status: 404,
+        message: "Product Not Found",
+      });
+    }
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -16,23 +33,29 @@ exports.productCreate = async (req, res) => {
     const newProduct = await Product.create(req.body);
     return res.status(201).json(newProduct);
   } catch (error) {
-    return res.status(500);
+    next(error);
   }
 };
 
-exports.productDelete = async (req, res) => {
+exports.productDelete = async (req, res, next) => {
   const { productId } = req.params;
   try {
-    const foundProduct = await Product.findById(productId);
+    const product = await Product.findByIdAndDelete({ _id: productId });
 
-    await Product.remove(foundProduct);
-    return res.status(204).end();
+    if (product) {
+      return res.status(204).end();
+    } else {
+      next({
+        status: 404,
+        message: "Product Not Found",
+      });
+    }
   } catch (error) {
-    res.status(500);
+    next(error);
   }
 };
 
-exports.productUpdate = async (req, res) => {
+exports.productUpdate = async (req, res, next) => {
   const { productId } = req.params;
 
   try {
@@ -46,9 +69,12 @@ exports.productUpdate = async (req, res) => {
     if (product) {
       return res.json(product);
     } else {
-      return res.status(404).json({ message: "Product Not Found" });
+      next({
+        status: 404,
+        message: "Product Not Found",
+      });
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 };
