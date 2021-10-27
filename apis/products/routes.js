@@ -3,7 +3,7 @@ const {
   productListFetch,
   productCreate,
   productDelete,
-  productListDetails,
+  productUpdate,
 } = require("./controllers");
 
 const router = express.Router();
@@ -11,5 +11,5 @@ const router = express.Router();
 router.get("/", productListFetch);
 router.post("/", productCreate);
 router.delete("/:productId", productDelete);
-router.get("/:productId", productListDetails);
+router.put("/:productId", productUpdate);
 module.exports = router;

@@ -32,4 +32,23 @@ exports.productDelete = async (req, res) => {
   }
 };
 
-exports.productListDetails = (req, res) => {};
+exports.productUpdate = async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const product = await Product.findByIdAndUpdate(
+      { _id: productId },
+      req.body,
+
+      { new: true, runValidators: true }
+    );
+
+    if (product) {
+      return res.json(product);
+    } else {
+      return res.status(404).json({ message: "Product Not Found" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
