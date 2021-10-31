@@ -2,6 +2,15 @@ const mongoose = require("mongoose");
 
 const Product = require("../../models/Product");
 
+exports.fetchProduct = async (productId, next) => {
+  try {
+    const product = await Product.findById(productId);
+    return product;
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.productListFetch = async (req, res, next) => {
   try {
     const products = await Product.find();
@@ -12,20 +21,7 @@ exports.productListFetch = async (req, res, next) => {
 };
 
 exports.productListDetail = async (req, res, next) => {
-  const { productId } = req.params;
-  try {
-    const product = await Product.findById({ _id: productId });
-    if (product) {
-      return res.json(product);
-    } else {
-      next({
-        status: 404,
-        message: "Product Not Found",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
+  res.status(200).json(req.product);
 };
 
 exports.productCreate = async (req, res) => {
@@ -38,43 +34,23 @@ exports.productCreate = async (req, res) => {
 };
 
 exports.productDelete = async (req, res, next) => {
-  const { productId } = req.params;
   try {
-    const product = await Product.findByIdAndDelete({ _id: productId });
-
-    if (product) {
-      return res.status(204).end();
-    } else {
-      next({
-        status: 404,
-        message: "Product Not Found",
-      });
-    }
-  } catch (error) {
+    await req.product.remove();
+    res.status(204).end();
+  } catch (err) {
     next(error);
   }
 };
 
 exports.productUpdate = async (req, res, next) => {
-  const { productId } = req.params;
-
   try {
     const product = await Product.findByIdAndUpdate(
-      { _id: productId },
+      req.product,
       req.body,
-
-      { new: true, runValidators: true }
+      { new: true, runValidators: true } // returns the updated product
     );
-
-    if (product) {
-      return res.json(product);
-    } else {
-      next({
-        status: 404,
-        message: "Product Not Found",
-      });
-    }
-  } catch (error) {
+    res.status(200).json(product);
+  } catch (err) {
     next(error);
   }
 };
