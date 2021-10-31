@@ -26,8 +26,11 @@ exports.productListDetail = async (req, res, next) => {
 
 exports.productCreate = async (req, res) => {
   try {
+    if (req.file) {
+      req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
+    }
     const newProduct = await Product.create(req.body);
-    return res.status(201).json(newProduct);
+    res.status(201).json(newProduct);
   } catch (error) {
     next(error);
   }
@@ -44,12 +47,11 @@ exports.productDelete = async (req, res, next) => {
 
 exports.productUpdate = async (req, res, next) => {
   try {
-    const product = await Product.findByIdAndUpdate(
-      req.product,
-      req.body,
-      { new: true, runValidators: true } // returns the updated product
-    );
-    res.status(200).json(product);
+    if (req.file) {
+      req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
+    }
+    await req.product.update(req.body);
+    res.status(204).end();
   } catch (err) {
     next(error);
   }

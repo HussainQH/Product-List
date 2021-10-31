@@ -1,5 +1,7 @@
 const express = require("express");
 const connectDb = require("./database");
+const cors = require("cors");
+const path = require("path");
 
 const productRouters = require("./apis/products/routes");
 
@@ -15,7 +17,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(cors());
 app.use("/api/products", productRouters);
+app.use("/media", express.static(path.join(__dirname, "media")));
 
 const PORT = 8000;
 connectDb();
