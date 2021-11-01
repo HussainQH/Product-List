@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const mongooseSlugPlugin = require("mongoose-slug-plugin");
+
 const { Schema } = mongoose;
 
 const ProductSchema = new Schema(
@@ -11,6 +12,7 @@ const ProductSchema = new Schema(
     color: String,
     quantity: Number,
     price: { type: Number, default: 5 },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   },
 
   { timestamps: true }
