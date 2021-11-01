@@ -50,8 +50,8 @@ exports.productUpdate = async (req, res, next) => {
     if (req.file) {
       req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
     }
-    await req.product.update(req.body);
-    res.status(204).end();
+    const updatedProduct = await req.product.update(req.body);
+    res.status(201).json(updatedProduct);
   } catch (err) {
     next(error);
   }
