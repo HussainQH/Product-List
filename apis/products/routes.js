@@ -1,7 +1,6 @@
 const express = require("express");
 const {
   productListFetch,
-  productCreate,
   productDelete,
   productUpdate,
   productListDetail,

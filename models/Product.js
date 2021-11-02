@@ -12,10 +12,12 @@ const ProductSchema = new Schema(
     color: String,
     quantity: Number,
     price: { type: Number, default: 5 },
-    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+    shop: { type: mongoose.Schema.Types.ObjectId, ref: "Shop" },
   },
 
   { timestamps: true }
 );
+
+ProductSchema.plugin(mongooseSlugPlugin, { tmpl: "<%=name%>" });
 
 module.exports = mongoose.model("Product", ProductSchema);
