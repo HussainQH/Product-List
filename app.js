@@ -5,6 +5,7 @@ const path = require("path");
 
 const productRouters = require("./apis/products/routes");
 const shopsRoutes = require("./apis/shops/routers");
+const usersRoutes = require("./apis/users/users.routs");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use("/api/products", productRouters);
 app.use("/api/shops", shopsRoutes);
+app.use("/api", usersRoutes);
 app.use("/media", express.static(path.join(__dirname, "media")));
 
 const PORT = 8000;
