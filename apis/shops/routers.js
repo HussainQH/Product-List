@@ -1,5 +1,5 @@
 const express = require("express");
-const upload = require("../../multer");
+const upload = require("../../Middleware/multer");
 const router = express.Router();
 const { shopCreate, getShops, productCreate } = require("./controllers");
 router.get("/", getShops);

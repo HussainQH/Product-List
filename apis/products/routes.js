@@ -9,7 +9,7 @@ const {
 
 const router = express.Router();
 
-const upload = require("../../multer");
+const upload = require("../../Middleware/multer");
 
 router.param("productId", async (req, res, next, productId) => {
   const product = await fetchProduct(productId, next);

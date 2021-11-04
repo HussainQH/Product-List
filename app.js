@@ -2,10 +2,12 @@ const express = require("express");
 const connectDb = require("./database");
 const cors = require("cors");
 const path = require("path");
+const passport = require("passport");
 
 const productRouters = require("./apis/products/routes");
 const shopsRoutes = require("./apis/shops/routers");
 const usersRoutes = require("./apis/users/users.routs");
+const { localStrategy } = require("./Middleware/passport");
 
 const app = express();
 
@@ -18,8 +20,11 @@ app.use((req, res, next) => {
 
   next();
 });
-
 app.use(cors());
+
+app.use(passport.initialize());
+passport.use(localStrategy);
+
 app.use("/api/products", productRouters);
 app.use("/api/shops", shopsRoutes);
 app.use("/api", usersRoutes);
