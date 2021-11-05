@@ -7,7 +7,17 @@ const ShopSchema = new Schema({
 
   image: { type: String },
 
-  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+  products: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
+  ],
+
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 ShopSchema.plugin(mongooseSlugPlugin, { tmpl: "<%=name%>" });

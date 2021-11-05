@@ -5,11 +5,11 @@ const {
   productUpdate,
   productListDetail,
   fetchProduct,
-} = require("./controllers");
+} = require("./product.controllers");
 
 const router = express.Router();
 
-const upload = require("../../Middleware/multer");
+const upload = require("../../middleware/multer");
 
 router.param("productId", async (req, res, next, productId) => {
   const product = await fetchProduct(productId, next);

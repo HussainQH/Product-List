@@ -3,6 +3,17 @@ const User = require("../../models/User");
 const jwt = require("jsonwebtoken");
 const { JWT_EXPIRATION_MS, JWT_SECRET } = require("../config/keys");
 
+const generateToken = (user) => {
+  const payload = {
+    _id: user._id,
+    username: user.username,
+    exp: Date.now() + JWT_EXPIRATION_MS,
+  };
+
+  const token = jwt.sign(payload, JWT_SECRET);
+  return token;
+};
+
 exports.signup = async (req, res, next) => {
   const { password } = req.body;
   const saltRounds = 10;
@@ -15,29 +26,16 @@ exports.signup = async (req, res, next) => {
 
     const newUser = await User.create(req.body);
 
-    // const payload = {
-    //   _id: newUser._id,
-    //   username: newUser.username,
-    //   exp: Date.now() + JWT_EXPIRATION_MS,
-    // };
+    const token = generateToken(newUser);
 
-    // const token = jwt.sign(payload, JWT_SECRET);
-    // console.log(hashedPassword);
-
-    res.status(201).json({ newUser });
+    res.status(201).json({ token });
   } catch (error) {
     next(error);
   }
 };
 
 exports.signin = (req, res) => {
-  const payload = {
-    _id: req.user._id,
-    username: req.user.username,
-    exp: Date.now() + JWT_EXPIRATION_MS,
-  };
-
-  const token = jwt.sign(payload, JWT_SECRET);
+  const token = generateToken(req.user);
 
   res.json({ token });
 };

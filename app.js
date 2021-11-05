@@ -4,10 +4,10 @@ const cors = require("cors");
 const path = require("path");
 const passport = require("passport");
 
-const productRouters = require("./apis/products/routes");
-const shopsRoutes = require("./apis/shops/routers");
+const productRouters = require("./apis/products/product.routes");
+const shopsRoutes = require("./apis/shops/shops.routes");
 const usersRoutes = require("./apis/users/users.routs");
-const { localStrategy } = require("./Middleware/passport");
+const { localStrategy, jwtStrategy } = require("./middleware/passport");
 
 const app = express();
 
@@ -24,6 +24,7 @@ app.use(cors());
 
 app.use(passport.initialize());
 passport.use(localStrategy);
+passport.use(jwtStrategy);
 
 app.use("/api/products", productRouters);
 app.use("/api/shops", shopsRoutes);
