@@ -10,6 +10,15 @@ exports.getShops = async (req, res) => {
   }
 };
 
+exports.fetchShop = async (shopId, next) => {
+  try {
+    const shop = await Shop.findById(shopId);
+    return shop;
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.shopCreate = async (req, res) => {
   try {
     if (req.file) {
@@ -17,6 +26,10 @@ exports.shopCreate = async (req, res) => {
     }
     req.body.owner = req.user._id;
     const newShop = await Shop.create(req.body);
+    await newShop.populate({
+      path: "owner",
+      select: "username",
+    });
     return res.status(201).json(newShop);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -25,6 +38,13 @@ exports.shopCreate = async (req, res) => {
 
 exports.productCreate = async (req, res, next) => {
   try {
+    if (!req.user._id.equals(req.shop.owner._id)) {
+      return next({
+        status: 401,
+        message: "Access Denied",
+      });
+    }
+
     if (req.file) {
       req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
     }
@@ -38,7 +58,6 @@ exports.productCreate = async (req, res, next) => {
     );
     res.status(201).json(newProduct);
   } catch (error) {
-    console.log("From Create product");
     next(error);
   }
 };

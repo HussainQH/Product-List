@@ -32,7 +32,6 @@ exports.jwtStrategy = new JWTStrategy(
   },
 
   async (payload, done) => {
-    console.log(payload);
     if (Date.now() > payload.exp) {
       return done(null, false);
     }
